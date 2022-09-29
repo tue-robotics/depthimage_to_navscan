@@ -4,6 +4,13 @@
 #include <ed/kinect/image_buffer.h>
 #include <tue/config/configuration.h>
 
+//TODO check whether these are the rigth imports
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
+
+#include <geolib/datatypes.h>
+#include <geolib/sensors/DepthCamera.h>
+
 #include <ros/publisher.h>
 
 /**
@@ -41,8 +48,12 @@ public:
      */
     bool isInitialized() const { return !map_frame_.empty(); }
 
-private:
+    void setCameraModel(const image_geometry::PinholeCameraModel& cam_model) { rasterizer.initFromCamModel(cam_model); }
 
+    bool imageToNavscan(std::vector<geo::Vector3> &measurements, const cv::Mat &depth, const geo::Pose3D sensor_pose);
+
+private:
+    geo::DepthCamera rasterizer;
     ImageBuffer image_buffer_;
 
     // Params

@@ -3,9 +3,6 @@
 #include <rgbd/image.h>
 #include <rgbd/view.h>
 
-#include <opencv2/highgui/highgui.hpp>
-#include <opencv2/imgproc/imgproc.hpp>
-
 #include <geolib/ros/tf_conversions.h>
 
 #include <sensor_msgs/PointCloud2.h>
@@ -59,39 +56,17 @@ void DepthSensorIntegrator::initialize(tue::Configuration config)
     pointcloud2_publisher_ = nh.advertise<sensor_msgs::PointCloud2>("navigation/cloud", 20);
 }
 
-// ----------------------------------------------------------------------------------------------------
-
-bool DepthSensorIntegrator::update()
+bool DepthSensorIntegrator::imageToNavscan(std::vector<geo::Vector3> &measurements, const cv::Mat &depth, geo::Pose3D sensor_pose)
 {
-    if (!isInitialized())
-        return false;
-
     bool visualize = false;
 
-    rgbd::ImageConstPtr image;
-
-    geo::Pose3D sensor_pose;
-    if (!image_buffer_.nextImage(image, sensor_pose))
-        return false;
-
-    // - - - - - - - - - - - - - - - - - - - - - - -
-
+    // process input
     geo::Pose3D sensor_pose_xya;
     geo::Pose3D sensor_pose_zrp;
     decomposePose(sensor_pose, sensor_pose_xya, sensor_pose_zrp);
 
-
-    // - - - - - - - - - - - - - - - - - - - - - - -
-
-    std::vector<geo::Vector3> measurements;
-
-    cv::Mat depth = image->getDepthImage();
-
     int width = depth.cols;
     int height = depth.rows;
-
-    rgbd::View view(*image, width);
-    const geo::DepthCamera& rasterizer = view.getRasterizer();
 
     cv::Mat obstacle_map, bla;
     if (visualize)
@@ -100,7 +75,10 @@ bool DepthSensorIntegrator::update()
         bla = depth.clone();
     }
 
-    //#TODO seperate functional code
+    //TODO get rid of custom rgbd stuff. get caminfo
+    //rgbd::View view(*image, width);
+    //const geo::DepthCamera& rasterizer = view.getRasterizer();
+
     cv::Mat buffer(height, 1, CV_64FC4, 0.0);
     std::vector<geo::Vector3> p_floors(height);
 
@@ -207,6 +185,35 @@ bool DepthSensorIntegrator::update()
         }
     }
 
+    //TODO find better place for visualisation
+    if (visualize)
+    {
+        cv::imshow("bla", bla / 10);
+        cv::imshow("obstacle map", obstacle_map);
+        cv::waitKey(3);
+    }
+    return true;
+}
+// ----------------------------------------------------------------------------------------------------
+
+bool DepthSensorIntegrator::update()
+{
+    if (!isInitialized())
+        return false;
+
+    rgbd::ImageConstPtr image;
+
+    geo::Pose3D sensor_pose;
+    if (!image_buffer_.nextImage(image, sensor_pose))
+        return false;
+
+    std::vector<geo::Vector3> measurements;
+
+    cv::Mat depth = image->getDepthImage();
+
+    // perform magic
+    imageToNavscan(measurements, depth, sensor_pose);
+
     sensor_msgs::PointCloud2 pointcloud2_msg;
     pointcloud2_msg.header.frame_id = map_frame_;
     pointcloud2_msg.header.stamp = ros::Time::now();
@@ -251,14 +258,6 @@ bool DepthSensorIntegrator::update()
     }
 
     pointcloud2_publisher_.publish(pointcloud2_msg);
-
-    if (visualize)
-    {
-        cv::imshow("bla", bla / 10);
-        cv::imshow("obstacle map", obstacle_map);
-        cv::waitKey(3);
-    }
-
     return true;
 }
 
