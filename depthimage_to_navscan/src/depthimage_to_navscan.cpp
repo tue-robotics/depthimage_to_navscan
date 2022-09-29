@@ -1,4 +1,4 @@
-#include "depth_sensor_integrator.h"
+#include "depthimage_to_navscan.h"
 
 #include <rgbd/image.h>
 #include <rgbd/view.h>
@@ -100,6 +100,7 @@ bool DepthSensorIntegrator::update()
         bla = depth.clone();
     }
 
+    //#TODO seperate functional code
     cv::Mat buffer(height, 1, CV_64FC4, 0.0);
     std::vector<geo::Vector3> p_floors(height);
 

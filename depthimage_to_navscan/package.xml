@@ -10,8 +10,13 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
+  <depend>ed</depend>
+  <depend>ed_navigation_msgs</depend>
+  <depend>ed_sensor_integration</depend>
   <depend>nav_msgs</depend>
   <depend>rgbd</depend>
   <depend>sensor_msgs</depend>
   <depend>roscpp</depend>
+
+  <exec_depend>cb_base_navigation</exec_depend>
 </package>

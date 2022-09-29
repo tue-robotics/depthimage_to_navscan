@@ -1,8 +1,6 @@
 #ifndef _DEPTH_SENSOR_INTEGRATOR_H_
 #define _DEPTH_SENSOR_INTEGRATOR_H_
 
-#include "map.h"
-
 #include <ed/kinect/image_buffer.h>
 #include <tue/config/configuration.h>
 
