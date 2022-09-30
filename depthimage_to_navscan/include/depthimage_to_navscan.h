@@ -1,9 +1,6 @@
 #ifndef _DEPTH_SENSOR_INTEGRATOR_H_
 #define _DEPTH_SENSOR_INTEGRATOR_H_
 
-#include <ed/kinect/image_buffer.h>
-#include <tue/config/configuration.h>
-
 //TODO check whether these are the rigth imports
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
@@ -32,21 +29,15 @@ public:
 
     /**
      * @brief initialize
-     * @param config tue::Configuration
+     * @param
      */
-    void initialize(tue::Configuration config);
-
-    /**
-     * @brief New depth image is converted pointcloud
-     * @return If update is executed correctly
-     */
-    bool update();
+    void initialize(); //TODO fix initialising parameters
 
     /**
      * @brief isInitialized
      * @return If the instance is initialized
      */
-    bool isInitialized() const { return !map_frame_.empty(); }
+    bool isInitialized() const { return true; } //TODO implement check initialised
 
     void setCameraModel(const image_geometry::PinholeCameraModel& cam_model) { rasterizer.initFromCamModel(cam_model); }
 
@@ -54,12 +45,8 @@ public:
 
 private:
     geo::DepthCamera rasterizer;
-    ImageBuffer image_buffer_;
 
     // Params
-
-    std::string map_frame_;
-
     double slope_threshold_;
     double min_distance_;
     double max_distance_;
@@ -67,9 +54,6 @@ private:
     int num_samples_;
 
     int slope_window_size_;
-
-    ros::Publisher pointcloud2_publisher_;
-
 };
 
 #endif

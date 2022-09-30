@@ -5,7 +5,6 @@
 
 #include <geolib/ros/tf_conversions.h>
 
-#include <sensor_msgs/PointCloud2.h>
 #include <ros/node_handle.h>
 
 // ----------------------------------------------------------------------------------------------------
@@ -39,21 +38,15 @@ DepthSensorIntegrator::~DepthSensorIntegrator()
 
 // ----------------------------------------------------------------------------------------------------
 
-void DepthSensorIntegrator::initialize(tue::Configuration config)
+void DepthSensorIntegrator::initialize()
 {
+    /*
     config.value("num_samples", num_samples_);
     config.value("slope_threshold", slope_threshold_);
     config.value("slope_window_size", slope_window_size_);
     config.value("min_distance", min_distance_);
     config.value("max_distance", max_distance_);
-    config.value("frame_id", map_frame_);
-
-    std::string rgbd_topic;
-    if (config.value("topic", rgbd_topic))
-        image_buffer_.initialize(rgbd_topic, map_frame_);
-
-    ros::NodeHandle nh("~");
-    pointcloud2_publisher_ = nh.advertise<sensor_msgs::PointCloud2>("navigation/cloud", 20);
+     */
 }
 
 bool DepthSensorIntegrator::imageToNavscan(std::vector<geo::Vector3> &measurements, const cv::Mat &depth, geo::Pose3D sensor_pose)
@@ -194,71 +187,3 @@ bool DepthSensorIntegrator::imageToNavscan(std::vector<geo::Vector3> &measuremen
     }
     return true;
 }
-// ----------------------------------------------------------------------------------------------------
-
-bool DepthSensorIntegrator::update()
-{
-    if (!isInitialized())
-        return false;
-
-    rgbd::ImageConstPtr image;
-
-    geo::Pose3D sensor_pose;
-    if (!image_buffer_.nextImage(image, sensor_pose))
-        return false;
-
-    std::vector<geo::Vector3> measurements;
-
-    cv::Mat depth = image->getDepthImage();
-
-    // perform magic
-    imageToNavscan(measurements, depth, sensor_pose);
-
-    sensor_msgs::PointCloud2 pointcloud2_msg;
-    pointcloud2_msg.header.frame_id = map_frame_;
-    pointcloud2_msg.header.stamp = ros::Time::now();
-
-    pointcloud2_msg.height = 1;
-
-    pointcloud2_msg.fields.resize(3);
-
-    pointcloud2_msg.fields[0].datatype = sensor_msgs::PointField::FLOAT32;
-    pointcloud2_msg.fields[0].name = "x";
-    pointcloud2_msg.fields[0].offset = 0;
-    pointcloud2_msg.fields[0].count = 1;
-
-    pointcloud2_msg.fields[1].datatype = sensor_msgs::PointField::FLOAT32;
-    pointcloud2_msg.fields[1].name = "y";
-    pointcloud2_msg.fields[1].offset = 4;
-    pointcloud2_msg.fields[1].count = 1;
-
-    pointcloud2_msg.fields[2].datatype = sensor_msgs::PointField::FLOAT32;
-    pointcloud2_msg.fields[2].name = "z";
-    pointcloud2_msg.fields[2].offset = 8;
-    pointcloud2_msg.fields[2].count = 1;
-
-    pointcloud2_msg.point_step = 12;
-
-    pointcloud2_msg.data.resize(pointcloud2_msg.point_step * measurements.size());
-    pointcloud2_msg.row_step = pointcloud2_msg.point_step * measurements.size();
-    pointcloud2_msg.width = measurements.size();
-
-    unsigned int i = 0;
-    for (std::vector<geo::Vector3>::const_iterator it = measurements.begin(); it != measurements.end(); ++it)
-    {
-        float x = it->x;
-        float y = it->y;
-        float z = 0.1;
-
-        // Copy x y z values to byte array
-        memcpy(pointcloud2_msg.data.data() + i * pointcloud2_msg.point_step    , reinterpret_cast<uint8_t*>(&x), 4);
-        memcpy(pointcloud2_msg.data.data() + i * pointcloud2_msg.point_step + 4, reinterpret_cast<uint8_t*>(&y), 4);
-        memcpy(pointcloud2_msg.data.data() + i * pointcloud2_msg.point_step + 8, reinterpret_cast<uint8_t*>(&z), 4);
-        ++i;
-    }
-
-    pointcloud2_publisher_.publish(pointcloud2_msg);
-    return true;
-}
-
-// ----------------------------------------------------------------------------------------------------
