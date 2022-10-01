@@ -38,15 +38,14 @@ DepthSensorIntegrator::~DepthSensorIntegrator()
 
 // ----------------------------------------------------------------------------------------------------
 
-void DepthSensorIntegrator::initialize()
+void DepthSensorIntegrator::initialize(double slope_threshold, double min_distance, double max_distance, int num_samples, int slope_window_size)
 {
-    /*
-    config.value("num_samples", num_samples_);
-    config.value("slope_threshold", slope_threshold_);
-    config.value("slope_window_size", slope_window_size_);
-    config.value("min_distance", min_distance_);
-    config.value("max_distance", max_distance_);
-     */
+    slope_threshold_ = slope_threshold;
+    min_distance_ = min_distance;
+    max_distance_ = max_distance;
+    num_samples_ = num_samples;
+    slope_window_size_ = slope_window_size;
+    params_initialised = true;
 }
 
 bool DepthSensorIntegrator::imageToNavscan(std::vector<geo::Vector3> &measurements, const cv::Mat &depth, geo::Pose3D sensor_pose)
