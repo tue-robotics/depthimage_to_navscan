@@ -7,15 +7,10 @@ project(depthimage_to_navscan)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
+#TODO // add explicit dependency on OpenCV
 find_package(catkin REQUIRED COMPONENTS
-        cb_base_navigation_msgs
-        ed
-        ed_navigation_msgs
-        ed_sensor_integration
-        nav_msgs
-        sensor_msgs
+        geolib2
         roscpp
-        rgbd
         )
 
 ## System dependencies are found with CMake's conventions
