@@ -63,10 +63,6 @@ bool DepthSensorIntegrator::imageToNavscan(std::vector<geo::Vector3> &measuremen
         bla = depth.clone();
     }
 
-    //TODO get rid of custom rgbd stuff. get caminfo
-    //rgbd::View view(*image, width);
-    //const geo::DepthCamera& rasterizer = view.getRasterizer();
-
     cv::Mat buffer(height, 1, CV_64FC4, 0.0);
     std::vector<geo::Vector3> p_floors(height);
 
