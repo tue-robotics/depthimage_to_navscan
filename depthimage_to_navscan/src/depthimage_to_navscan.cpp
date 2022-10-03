@@ -1,11 +1,7 @@
 #include "depthimage_to_navscan.h"
 
-#include <rgbd/image.h>
-#include <rgbd/view.h>
-
 #include <geolib/ros/tf_conversions.h>
-
-#include <ros/node_handle.h>
+#include <opencv2/highgui/highgui.hpp>
 
 // ----------------------------------------------------------------------------------------------------
 

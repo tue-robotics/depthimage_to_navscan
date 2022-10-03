@@ -1,14 +1,10 @@
 #ifndef _DEPTH_SENSOR_INTEGRATOR_H_
 #define _DEPTH_SENSOR_INTEGRATOR_H_
 
-//TODO check whether these are the rigth imports
-#include <opencv2/highgui/highgui.hpp>
-#include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/core/mat.hpp>
 
 #include <geolib/datatypes.h>
 #include <geolib/sensors/DepthCamera.h>
-
-#include <ros/publisher.h>
 
 /**
  * @brief A depth image is converted to a pointcloud based on the normal. This is used for detection of obstacles
