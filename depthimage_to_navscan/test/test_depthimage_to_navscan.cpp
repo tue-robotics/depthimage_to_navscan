@@ -5,6 +5,41 @@
 
 #include <depthimage_to_navscan.h>
 
+class DepthSensorIntegratorTest : public ::testing::Test {
+protected:
+    void SetUp() override
+    {
+        // configure camera model
+        cam_model.fx = 0.05;
+        cam_model.fy = 0.05;
+        cam_model.cx = 0.0;
+        cam_model.cy = 0.0;
+        cam_model.Tx = 0.0;
+        cam_model.Ty = 0.0;
+
+        dsi_cam_init.setCameraModel(cam_model);
+
+        dsi_params_init.initialize(slope_threshold, min_distance, max_distance, num_samples, slope_window_size);
+
+        dsi_full_init.setCameraModel(cam_model);
+        dsi_full_init.initialize(slope_threshold, min_distance, max_distance, num_samples, slope_window_size);
+    }
+
+    DepthSensorIntegrator dsi_0;
+    DepthSensorIntegrator dsi_params_init;
+    DepthSensorIntegrator dsi_cam_init;
+    DepthSensorIntegrator dsi_full_init;
+
+    // sample cameramodel
+    image_geometry::PinholeCameraModel cam_model
+    // sample config
+    uint num_samples = 20;
+    double slope_threshold = 1.0;
+    double min_distance = 0.4;
+    double max_distance = 2.0;
+    int slope_window_size = 30;
+}
+
 TEST(NavscanTest, CheckNotInitialised)
 {
 std::vector<geo::Vector3> measurements;
