@@ -13,4 +13,6 @@
   <depend>geolib2</depend>
   <depend>image_geometry</depend>
   <depend>roscpp</depend>
+
+  <test_depend>sensor_msgs</test_depend>
 </package>
