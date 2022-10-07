@@ -5,6 +5,7 @@
 
 #include <geolib/datatypes.h>
 #include <geolib/sensors/DepthCamera.h>
+#include <image_geometry/pinhole_camera_model.h>
 
 /**
  * @brief A depth image is converted to a pointcloud based on the normal. This is used for detection of obstacles

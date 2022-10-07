@@ -10,6 +10,7 @@ project(depthimage_to_navscan)
 #TODO // add explicit dependency on OpenCV
 find_package(catkin REQUIRED COMPONENTS
         geolib2
+        image_geometry
         roscpp
         )
 
