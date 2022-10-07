@@ -46,6 +46,9 @@ void DepthSensorIntegrator::initialize(double slope_threshold, double min_distan
 
 bool DepthSensorIntegrator::imageToNavscan(std::vector<geo::Vector3> &measurements, const cv::Mat &depth, geo::Pose3D sensor_pose)
 {
+    if (!isInitialized())
+        return false;
+
     bool visualize = false;
 
     // process input
