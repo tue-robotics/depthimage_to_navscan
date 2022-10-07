@@ -82,6 +82,19 @@ ASSERT_TRUE(dsi_full_init.isInitialized()) << "depthSensorIntegrator believes it
 ASSERT_TRUE(dsi_full_init.imageToNavscan(measurements, depth, sensor_pose)) << "imageToNavscan returned true even when not initialised";
 }
 
+TEST_F(DepthSensorIntegratorTest, CheckOutputSize)
+{
+    //TODO proper configuration of depth, sensor pose and cam model
+std::vector<geo::Vector3> measurements;
+
+//generate input data
+cv::Mat depth;
+geo::Pose3D sensor_pose;
+
+dsi_full_init.imageToNavscan(measurements, depth, sensor_pose);
+ASSERT_EQ(measurements.size(), num_samples) << "Output navscan has incorrect number of points";
+}
+
 int main(int argc, char **argv)
 {
     testing::InitGoogleTest(&argc, argv);
