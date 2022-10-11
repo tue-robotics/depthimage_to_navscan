@@ -5,6 +5,7 @@
 
 #include <depthimage_to_navscan.h>
 #include <geolib/datatypes.h>
+#include <math.h>
 #include <sensor_msgs/CameraInfo.h>
 #include <sensor_msgs/distortion_models.h>
 
@@ -108,12 +109,11 @@ ASSERT_TRUE(dsi_full_init.imageToNavscan(measurements, depth, sensor_pose)) << "
 
 TEST_F(DepthSensorIntegratorTest, CheckOutputSize)
 {
-    //TODO proper configuration of depth, sensor pose and cam model
 std::vector<geo::Vector3> measurements;
 
 //generate input data
-cv::Mat depth;
-geo::Pose3D sensor_pose;
+cv::Mat depth(CAM_WIDTH, CAM_HEIGHT, CV_32F, 1.0);
+geo::Pose3D sensor_pose(0, 0, 1.0, M_PI_2, -M_PI_2, 0.0);
 
 dsi_full_init.imageToNavscan(measurements, depth, sensor_pose);
 ASSERT_EQ(measurements.size(), num_samples) << "Output navscan has incorrect number of points";
