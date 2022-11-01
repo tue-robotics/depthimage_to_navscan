@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
 
         std::vector <geo::Vector3> measurements;
 
-        cv::Mat depth = image->getDepthImage();
+        const cv::Mat& depth = image->getDepthImage();
 
         // perform magic
         depthSensorIntegrator.imageToNavscan(measurements, depth, sensor_pose);
