@@ -13,13 +13,13 @@ int main(int argc, char *argv[])
 
     std::string rgbd_topic;
     if (!nh.getParam("rgbd_topic", rgbd_topic)) {
-        ROS_ERROR("[Depthimage to Navscan RGBD] could not read rgbd_topic from parameter server");
+        ROS_FATAL("[Depthimage to Navscan RGBD] could not read rgbd_topic from parameter server");
         return 1;
     }
 
     std::string map_frame;
     if (!nh.getParam("map_frame", map_frame)) {
-        ROS_ERROR("[Depthimage to Navscan RGBD] could not read map_frame from parameter server");
+        ROS_FATAL("[Depthimage to Navscan RGBD] could not read map_frame from parameter server");
         return 1;
     }
 
