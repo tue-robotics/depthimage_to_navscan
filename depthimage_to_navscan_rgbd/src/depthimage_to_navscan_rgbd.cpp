@@ -6,7 +6,7 @@
 #include <sensor_msgs/PointCloud2.h>
 
 // TODO docstring and usage
-int main(int argc, char *argv[])
+int main(int argc, char** argv)
 {
     ros::init(argc, argv, "depthimage_to_navscan_rgbd");
     ros::NodeHandle nh;
