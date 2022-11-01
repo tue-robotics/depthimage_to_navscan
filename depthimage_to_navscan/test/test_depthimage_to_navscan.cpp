@@ -79,8 +79,8 @@ std::vector<geo::Vector3> measurements;
 cv::Mat depth;
 geo::Pose3D sensor_pose;
 
-ASSERT_FALSE(dsi_params_init.isInitialized()) << "depthSensorIntegrator believes itself to be initialized upon construction";
-ASSERT_FALSE(dsi_params_init.imageToNavscan(measurements, depth, sensor_pose)) << "imageToNavscan returned true even when not initialised";
+ASSERT_FALSE(dsi_params_init.isInitialized()) << "depthSensorIntegrator believes itself to be initialized while camera was not initialised";
+ASSERT_FALSE(dsi_params_init.imageToNavscan(measurements, depth, sensor_pose)) << "imageToNavscan returned true even when camera not initialised";
 }
 
 TEST_F(DepthSensorIntegratorTest, CheckParamsNotInitialised)
@@ -91,8 +91,8 @@ std::vector<geo::Vector3> measurements;
 cv::Mat depth;
 geo::Pose3D sensor_pose;
 
-ASSERT_FALSE(dsi_cam_init.isInitialized()) << "depthSensorIntegrator believes itself to be initialized upon construction";
-ASSERT_FALSE(dsi_cam_init.imageToNavscan(measurements, depth, sensor_pose)) << "imageToNavscan returned true even when not initialised";
+ASSERT_FALSE(dsi_cam_init.isInitialized()) << "depthSensorIntegrator believes itself to be initialized even though params was not intialised";
+ASSERT_FALSE(dsi_cam_init.imageToNavscan(measurements, depth, sensor_pose)) << "imageToNavscan returned true even when parameters not initialised";
 }
 
 TEST_F(DepthSensorIntegratorTest, CheckInitialised)
@@ -103,8 +103,8 @@ std::vector<geo::Vector3> measurements;
 cv::Mat depth;
 geo::Pose3D sensor_pose;
 
-ASSERT_TRUE(dsi_full_init.isInitialized()) << "depthSensorIntegrator believes itself to be initialized upon construction";
-ASSERT_TRUE(dsi_full_init.imageToNavscan(measurements, depth, sensor_pose)) << "imageToNavscan returned true even when not initialised";
+ASSERT_TRUE(dsi_full_init.isInitialized()) << "depthSensorIntegrator believes itself to not be initialized while it was";
+ASSERT_TRUE(dsi_full_init.imageToNavscan(measurements, depth, sensor_pose)) << "imageToNavscan returned false when initialised";
 }
 
 TEST_F(DepthSensorIntegratorTest, CheckOutputSize)
