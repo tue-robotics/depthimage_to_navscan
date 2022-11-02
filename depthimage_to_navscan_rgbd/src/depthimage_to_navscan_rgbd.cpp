@@ -6,7 +6,7 @@
 #include <sensor_msgs/PointCloud2.h>
 
 // TODO docstring and usage
-int main(int argc, char *argv[])
+int main(int argc, char** argv)
 {
     ros::init(argc, argv, "depthimage_to_navscan_rgbd");
     ros::NodeHandle nh;
@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
 
         std::vector <geo::Vector3> measurements;
 
-        cv::Mat depth = image->getDepthImage();
+        const cv::Mat& depth = image->getDepthImage();
 
         // perform magic
         depthSensorIntegrator.imageToNavscan(measurements, depth, sensor_pose);

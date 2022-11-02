@@ -1,5 +1,8 @@
 <?xml version="1.0"?>
-<package format="2">
+<?xml-model
+  href="http://download.ros.org/schema/package_format3.xsd"
+  schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
   <name>depthimage_to_navscan</name>
   <version>0.0.0</version>
   <description>The depthimage_to_navscan package</description>
@@ -15,4 +18,5 @@
   <depend>roscpp</depend>
 
   <test_depend>sensor_msgs</test_depend>
+
 </package>
