@@ -53,6 +53,9 @@ int main(int argc, char** argv)
     }
 
     depthSensorIntegrator.initialize(slope_threshold, min_distance, max_distance, num_samples, slope_window_size);
+    ROS_INFO("[Depthimage to Navscan RGBD] initialised depth sensor integrator with:\n"
+              " slope_threshold: %f, min_distance: %f, max_distance: %f, num_samples: %i, slope_window_size: %i",
+              slope_threshold, min_distance, max_distance, num_samples, slope_window_size);
 
     ImageBuffer image_buffer;
     image_buffer.initialize(rgbd_topic, map_frame);
@@ -67,11 +70,13 @@ int main(int argc, char** argv)
             continue;
 
         if (!depthSensorIntegrator.isInitialized()) {
+            ROS_INFO("[Depthimage to Navscan RGBD] configuring camera model");
             depthSensorIntegrator.setCameraModel(image->getCameraModel());
             if (!depthSensorIntegrator.isInitialized()) {
                 ROS_FATAL("[Depthimage to Navscan RGBD] depthSensorIntegrator could not be initialised correctly!");
                 return 1;
             }
+            ROS_INFO("[Depthimage to Navscan RGBD] configured");
         }
 
         std::vector <geo::Vector3> measurements;
