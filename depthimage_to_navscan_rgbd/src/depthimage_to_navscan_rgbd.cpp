@@ -19,7 +19,8 @@ int main(int argc, char** argv)
     }
 
     std::string frame_id;
-    if (!nh.getParam("frame_id", frame_id)) {
+    if (!nh.getParam("frame_id", frame_id))
+    {
         ROS_FATAL("[Depthimage to Navscan RGBD] could not read frame_id from parameter server");
         return 1;
     }
