@@ -75,10 +75,12 @@ int main(int argc, char** argv)
         if (!image_buffer.nextImage(image, sensor_pose))
             continue;
 
-        if (!depthSensorIntegrator.isInitialized()) {
+        if (!depthSensorIntegrator.isInitialized())
+        {
             ROS_INFO("[Depthimage to Navscan RGBD] configuring camera model");
             depthSensorIntegrator.setCameraModel(image->getCameraModel());
-            if (!depthSensorIntegrator.isInitialized()) {
+            if (!depthSensorIntegrator.isInitialized())
+            {
                 ROS_FATAL("[Depthimage to Navscan RGBD] depthSensorIntegrator could not be initialised correctly!");
                 return 1;
             }
