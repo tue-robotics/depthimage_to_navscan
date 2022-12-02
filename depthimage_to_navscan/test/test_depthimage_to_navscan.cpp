@@ -107,7 +107,7 @@ ASSERT_TRUE(dsi_full_init.isInitialized()) << "depthSensorIntegrator believes it
 ASSERT_TRUE(dsi_full_init.imageToNavscan(measurements, depth, sensor_pose)) << "imageToNavscan returned false when initialised";
 }
 
-TEST_F(DepthSensorIntegratorTest, CheckOutputSize)
+TEST_F(DepthSensorIntegratorTest, CheckOutput)
 {
 std::vector<geo::Vector3> measurements;
 
