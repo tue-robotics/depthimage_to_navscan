@@ -32,23 +32,28 @@ int main(int argc, char** argv)
     double max_distance;
     int slope_window_size;
 
-    if (!nh.getParam("slope_threshold", slope_threshold)) {
+    if (!nh.getParam("slope_threshold", slope_threshold))
+    {
         ROS_FATAL("[Depthimage to Navscan RGBD] could not read slope_threshold from parameter server");
         return 1;
     }
-    if (!nh.getParam("min_distance", min_distance)) {
+    if (!nh.getParam("min_distance", min_distance))
+    {
         ROS_FATAL("[Depthimage to Navscan RGBD] could not read min_distance from parameter server");
         return 1;
     }
-    if (!nh.getParam("max_distance", max_distance)) {
+    if (!nh.getParam("max_distance", max_distance))
+    {
         ROS_FATAL("[Depthimage to Navscan RGBD] could not read max_distance from parameter server");
         return 1;
     }
-    if (!nh.getParam("slope_window_size", slope_window_size)) {
+    if (!nh.getParam("slope_window_size", slope_window_size))
+    {
         ROS_FATAL("[Depthimage to Navscan RGBD] could not read slope_window_size from parameter server");
         return 1;
     }
-    if (!nh.getParam("num_samples", num_samples)) {
+    if (!nh.getParam("num_samples", num_samples))
+    {
         ROS_FATAL("[Depthimage to Navscan RGBD] could not read num_samples from parameter server");
         return 1;
     }
