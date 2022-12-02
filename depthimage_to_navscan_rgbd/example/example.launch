@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <launch>
   <node pkg="depthimage_to_navscan_rgbd" type="depthimage_to_navscan_rgbd" name="depthimage_to_navscan_rgbd_node">
-    <rosparam command="load" file="$(find depthimage_to_navscan_rgbd)/launch/example_config.yaml"/>
+    <rosparam command="load" file="$(find depthimage_to_navscan_rgbd)/example/example_config.yaml"/>
   </node>
 </launch>
