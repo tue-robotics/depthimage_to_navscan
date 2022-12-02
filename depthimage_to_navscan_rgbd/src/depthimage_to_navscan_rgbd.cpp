@@ -12,7 +12,8 @@ int main(int argc, char** argv)
     ros::NodeHandle nh("~");
 
     std::string rgbd_topic;
-    if (!nh.getParam("rgbd_topic", rgbd_topic)) {
+    if (!nh.getParam("rgbd_topic", rgbd_topic))
+    {
         ROS_FATAL("[Depthimage to Navscan RGBD] could not read rgbd_topic from parameter server");
         return 1;
     }
