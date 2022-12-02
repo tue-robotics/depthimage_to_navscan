@@ -118,7 +118,7 @@ geo::Pose3D sensor_pose(0, 0, 1.0, M_PI_2, -M_PI_2, 0.0);
 
 dsi_full_init.imageToNavscan(measurements, depth, sensor_pose);
 ASSERT_EQ(measurements.size(), num_samples) << "Output navscan has incorrect number of points";
-for (int i=0; i<measurements.size(); i++)
+for (uint i=0; i<measurements.size(); i++)
 {
     ASSERT_EQ(measurements[i].y, distance) << "measurement has incorrect distance";
 }
