@@ -17,9 +17,9 @@ int main(int argc, char** argv)
         return 1;
     }
 
-    std::string map_frame;
-    if (!nh.getParam("map_frame", map_frame)) {
-        ROS_FATAL("[Depthimage to Navscan RGBD] could not read map_frame from parameter server");
+    std::string frame_id;
+    if (!nh.getParam("frame_id", frame_id)) {
+        ROS_FATAL("[Depthimage to Navscan RGBD] could not read frame_id from parameter server");
         return 1;
     }
 
@@ -58,7 +58,7 @@ int main(int argc, char** argv)
               slope_threshold, min_distance, max_distance, num_samples, slope_window_size);
 
     ImageBuffer image_buffer;
-    image_buffer.initialize(rgbd_topic, map_frame);
+    image_buffer.initialize(rgbd_topic, frame_id);
 
     ros::Publisher pointcloud2_publisher = nh.advertise<sensor_msgs::PointCloud2>("navscan", 20);
 
@@ -88,7 +88,7 @@ int main(int argc, char** argv)
 
         // fill output message
         sensor_msgs::PointCloud2 pointcloud2_msg;
-        pointcloud2_msg.header.frame_id = map_frame;
+        pointcloud2_msg.header.frame_id = frame_id;
         pointcloud2_msg.header.stamp = ros::Time::now();
 
         pointcloud2_msg.height = 1;
