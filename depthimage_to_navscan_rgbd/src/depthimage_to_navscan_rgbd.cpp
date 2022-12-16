@@ -98,7 +98,7 @@ int main(int argc, char** argv)
         // fill output message
         sensor_msgs::PointCloud2 pointcloud2_msg;
         pointcloud2_msg.header.frame_id = frame_id;
-        pointcloud2_msg.header.stamp = ros::Time::now();
+        pointcloud2_msg.header.stamp.fromSec(image->getTimestamp());
 
         pointcloud2_msg.height = 1;
 
