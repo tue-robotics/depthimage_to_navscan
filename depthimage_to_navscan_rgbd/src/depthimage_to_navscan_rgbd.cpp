@@ -1,5 +1,5 @@
 #include <ros/ros.h>
-#include <depthimage_to_navscan.h>
+#include <depthimage_to_navscan/depthimage_to_navscan.h>
 
 #include <rgbd/image.h>
 #include <rgbd/image_buffer/image_buffer.h>

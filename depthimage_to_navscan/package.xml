@@ -5,7 +5,7 @@
 <package format="3">
   <name>depthimage_to_navscan</name>
   <version>0.0.0</version>
-  <description>The depthimage_to_navscan package</description>
+  <description>Algorithms to generate a pointcloud obstacle message based on depthimages</description>
 
   <maintainer email="PetervDooren@outlook.com">Peter van Dooren</maintainer>
 
@@ -15,8 +15,9 @@
 
   <depend>geolib2</depend>
   <depend>image_geometry</depend>
-  <depend>roscpp</depend>
+  <depend>libopencv-dev</depend>
 
+  <test_depend>catkin_lint_cmake</test_depend>
   <test_depend>sensor_msgs</test_depend>
 
 </package>
