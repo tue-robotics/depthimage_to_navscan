@@ -35,12 +35,16 @@ include_directories(
  ${catkin_INCLUDE_DIRS}
 )
 
-add_executable(depthimage_to_navscan_rgbd src/depthimage_to_navscan_rgbd.cpp)
-target_link_libraries(depthimage_to_navscan_rgbd ${catkin_LIBRARIES})
+add_executable(${PROJECT_NAME} src/depthimage_to_navscan_rgbd.cpp)
+target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES})
 
 #############
 ## Install ##
 #############
+install(
+  TARGETS ${PROJECT_NAME}
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
 
 
 #############
