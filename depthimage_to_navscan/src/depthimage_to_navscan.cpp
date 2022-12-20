@@ -1,4 +1,4 @@
-#include "depthimage_to_navscan.h"
+#include "depthimage_to_navscan/depthimage_to_navscan.h"
 
 #include <geolib/ros/tf_conversions.h>
 #include <opencv2/highgui/highgui.hpp>

@@ -13,10 +13,18 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
-  <depend>rgbd</depend>
-  <depend>depthimage_to_navscan</depend>
-  <depend>ed_sensor_integration</depend>
-  <depend>sensor_msgs</depend>
-  <depend>roscpp</depend>
+  <build_depend>depthimage_to_navscan</build_depend>
+  <build_depend>rgbd</build_depend>
+  <build_depend>rgbd_image_buffer</build_depend>
+  <build_depend>roscpp</build_depend>
+  <build_depend>sensor_msgs</build_depend>
+
+  <exec_depend>depthimage_to_navscan</exec_depend>
+  <exec_depend>rgbd</exec_depend>
+  <exec_depend>rgbd_image_buffer</exec_depend>
+  <exec_depend>roscpp</exec_depend>
+  <exec_depend>sensor_msgs</exec_depend>
+
+  <test_depend>catkin_lint_cmake</test_depend>
 
 </package>

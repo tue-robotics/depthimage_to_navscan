@@ -1,8 +1,8 @@
 #include <ros/ros.h>
-#include <depthimage_to_navscan.h>
+#include <depthimage_to_navscan/depthimage_to_navscan.h>
 
 #include <rgbd/image.h>
-#include <ed/kinect/image_buffer.h>
+#include <rgbd/image_buffer/image_buffer.h>
 #include <sensor_msgs/PointCloud2.h>
 
 // TODO docstring and usage
@@ -64,7 +64,7 @@ int main(int argc, char** argv)
               " slope_threshold: %f, min_distance: %f, max_distance: %f, num_samples: %i, slope_window_size: %i",
               slope_threshold, min_distance, max_distance, num_samples, slope_window_size);
 
-    ImageBuffer image_buffer;
+    rgbd::ImageBuffer image_buffer;
     image_buffer.initialize(rgbd_topic, frame_id);
 
     ros::Publisher pointcloud2_publisher = nh.advertise<sensor_msgs::PointCloud2>("navscan", 20);

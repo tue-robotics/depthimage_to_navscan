@@ -3,7 +3,7 @@
 //
 #include <gtest/gtest.h>
 
-#include <depthimage_to_navscan.h>
+#include <depthimage_to_navscan/depthimage_to_navscan.h>
 #include <geolib/datatypes.h>
 #include <math.h>
 #include <sensor_msgs/CameraInfo.h>
