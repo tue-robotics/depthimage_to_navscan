@@ -41,7 +41,7 @@ void DepthSensorIntegrator::initialize(double slope_threshold, double min_distan
     max_distance_ = max_distance;
     num_samples_ = num_samples;
     slope_window_size_ = slope_window_size;
-    params_initialised = true;
+    params_initialised_ = true;
 }
 
 bool DepthSensorIntegrator::imageToNavscan(std::vector<geo::Vector3> &measurements, const cv::Mat &depth, geo::Pose3D sensor_pose)
@@ -71,7 +71,7 @@ bool DepthSensorIntegrator::imageToNavscan(std::vector<geo::Vector3> &measuremen
 
     double x_step = 1;
     if (num_samples_ > 0 && num_samples_ < depth.cols)
-        x_step = (double)depth.cols / num_samples_;
+        x_step = static_cast<double>(depth.cols) / num_samples_;
 
     for(double x = 0; x < width; x += x_step)
     {
