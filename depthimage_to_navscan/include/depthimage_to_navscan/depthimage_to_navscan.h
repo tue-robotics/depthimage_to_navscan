@@ -34,20 +34,20 @@ public:
      */
     void initialize(double slope_threshold, double min_distance, double max_distance, int num_samples, int slope_window_size);
 
-    inline double getSlopeThreshold() const {return slope_threshold_;}
-    inline void setSlopeThreshold(double a) {slope_threshold_ = a;}
+    inline double getSlopeThreshold() const { return slope_threshold_; }
+    inline void setSlopeThreshold(double d) { slope_threshold_ = d; }
 
-    inline double getMinDistance() const {return min_distance_;}
-    inline void setMinDistance(double a) {min_distance_ = a;}
+    inline double getMinDistance() const { return min_distance_; }
+    inline void setMinDistance(double d) { min_distance_ = d; }
 
-    inline double getMaxDistance() const {return max_distance_;}
-    inline void setMaxDistance(double a) {max_distance_ = a;}
+    inline double getMaxDistance() const { return max_distance_; }
+    inline void setMaxDistance(double d) { max_distance_ = d; }
 
-    inline int getNumSamples() const {return num_samples_;}
-    inline void setNumSamples(int n) {num_samples_ = n;}
+    inline int getNumSamples() const { return num_samples_; }
+    inline void setNumSamples(int n) { num_samples_ = n; }
 
-    inline int getSlopeWindowSize() const {return slope_window_size_;}
-    inline void setSlopeWindowSize(int n) {slope_window_size_ = n;}
+    inline int getSlopeWindowSize() const { return slope_window_size_; }
+    inline void setSlopeWindowSize(int n) { slope_window_size_ = n; }
 
     /**
      * @brief isInitialized
@@ -55,7 +55,7 @@ public:
      */
     inline bool isInitialized() const { return params_initialised_ && rasterizer_.initialized(); }
 
-    inline void setCameraModel(const image_geometry::PinholeCameraModel& cam_model) { rasterizer.initFromCamModel(cam_model); depthcam_initialised = true;}
+    inline void setCameraModel(const image_geometry::PinholeCameraModel& cam_model) { rasterizer_.initFromCamModel(cam_model) }
 
     bool imageToNavscan(std::vector<geo::Vector3> &measurements, const cv::Mat &depth, const geo::Pose3D sensor_pose);
 
