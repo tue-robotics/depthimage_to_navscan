@@ -73,13 +73,13 @@ bool DepthSensorIntegrator::imageToNavscan(std::vector<geo::Vector3> &measuremen
     if (num_samples_ > 0 && num_samples_ < depth.cols)
         x_step = static_cast<double>(depth.cols) / num_samples_;
 
-    for(double x = 0; x < width; x += x_step)
+    for (double x = 0; x < width; x += x_step)
     {
         geo::Vector3 p_floor_closest(1e6, 1e6, 0);
 
         buffer.at<cv::Vec4d>(0, 0) = cv::Vec4d(0, 0, 0, 0);
 
-        for(int y = 1; y < height; ++y)
+        for (int y = 1; y < height; ++y)
         {
             float d = depth.at<float>(y, x);
             if (d == 0 || d != d)
@@ -88,7 +88,7 @@ bool DepthSensorIntegrator::imageToNavscan(std::vector<geo::Vector3> &measuremen
                 continue;
             }
 
-            geo::Vector3 p_sensor = rasterizer.project2Dto3D(x, y) * d;
+            geo::Vector3 p_sensor = rasterizer_.project2Dto3D(x, y) * d;
             p_floors[y] = sensor_pose_zrp * p_sensor;
             const geo::Vector3& p_floor = p_floors[y];
 
@@ -115,7 +115,7 @@ bool DepthSensorIntegrator::imageToNavscan(std::vector<geo::Vector3> &measuremen
                                          + cv::Vec4d(p_floor.y, p_floor.z, p_floor.y * p_floor.z, p_floor.y * p_floor.y);
         }
 
-        for(int y = slope_window_size_; y < height - slope_window_size_; ++y)
+        for (int y = slope_window_size_; y < height - slope_window_size_; ++y)
         {
             float d = depth.at<float>(y, x);
             if (d == 0 || d != d)
