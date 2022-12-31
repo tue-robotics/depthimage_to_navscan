@@ -26,7 +26,11 @@ public:
 
     /**
      * @brief initialize
-     * @param
+     * @param slope_threshold
+     * @param min_distance
+     * @param max_distance
+     * @param num_samples
+     * @param slope_window_size
      */
     void initialize(double slope_threshold, double min_distance, double max_distance, int num_samples, int slope_window_size);
 
