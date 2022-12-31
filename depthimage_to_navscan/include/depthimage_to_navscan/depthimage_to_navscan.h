@@ -55,7 +55,7 @@ public:
      */
     inline bool isInitialized() const { return params_initialised_ && rasterizer_.initialized(); }
 
-    inline void setCameraModel(const image_geometry::PinholeCameraModel& cam_model) { rasterizer_.initFromCamModel(cam_model) }
+    inline void setCameraModel(const image_geometry::PinholeCameraModel& cam_model) { rasterizer_.initFromCamModel(cam_model); }
 
     bool imageToNavscan(std::vector<geo::Vector3> &measurements, const cv::Mat &depth, const geo::Pose3D sensor_pose);
 
