@@ -99,8 +99,8 @@ bool DepthSensorIntegrator::imageToNavscan(std::vector<geo::Vector3> &measuremen
 
                 if (visualize)
                 {
-                    cv::Point2i p(p_floor.x * 50 + obstacle_map.rows / 2,
-                                  obstacle_map.cols / 2 - p_floor.y * 50);
+                    cv::Point2i p(p_floor.x * 100 + obstacle_map.rows / 2,
+                                  obstacle_map.cols - p_floor.y * 100);
                     if (p.x >= 0 && p.x < obstacle_map.cols && p.y >= 0 && p.y < obstacle_map.rows)
                         obstacle_map.at<float>(p) = 0.5;
                 }
