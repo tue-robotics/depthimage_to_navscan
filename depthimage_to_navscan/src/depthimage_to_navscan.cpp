@@ -105,12 +105,6 @@ bool DepthSensorIntegrator::imageToNavscan(std::vector<geo::Vector3> &measuremen
                         obstacle_map.at<float>(p) = 0.5;
                 }
             }
-
-            //            x_sum_ += x;
-            //            y_sum_ += y;
-            //            xy_sum_ += x * y;
-            //            x2_sum_ += x * x;
-
             buffer.at<cv::Vec4d>(y, 0) = buffer.at<cv::Vec4d>(y - 1, 0)
                                          + cv::Vec4d(p_floor.y, p_floor.z, p_floor.y * p_floor.z, p_floor.y * p_floor.y);
         }
@@ -125,21 +119,12 @@ bool DepthSensorIntegrator::imageToNavscan(std::vector<geo::Vector3> &measuremen
 
             if (p_floor.z < 0.2)
             {
-//                const cv::Vec4d& bm = buffer.at<cv::Vec4d>(y, 0);
 
-//                double c1, s1;
-//                cv::Vec4d b1 = bm - buffer.at<cv::Vec4d>(y - slope_window_size_, 0);
-//                s1 = (slope_window_size_ * b1[2] - b1[0] * b1[1]) / (slope_window_size_ * b1[3] - b1[0] * b1[0]);
-                //            c1 = b1[1] / slope_window_size_ - s1 * (b1[0] / slope_window_size_);
-
-//                double c2, s2;
                 double s2;
                 cv::Vec4d b2 = buffer.at<cv::Vec4d>(y + slope_window_size_ / 2, 0)
                                - buffer.at<cv::Vec4d>(y - slope_window_size_ / 2, 0);
                 s2 = (slope_window_size_ * b2[2] - b2[0] * b2[1]) / (slope_window_size_ * b2[3] - b2[0] * b2[0]);
-                //            c2 = b2[1] / slope_window_size_ - s1 * (b2[0] / slope_window_size_);
 
-//                if (std::abs(s1) > 1 && std::abs(s2) < 1)
                 if (std::abs(s2) > slope_threshold_)
                 {
                     if (p_floor.y < p_floor_closest.y)
