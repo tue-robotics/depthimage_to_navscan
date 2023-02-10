@@ -164,12 +164,6 @@ bool DepthSensorIntegrator::imageToNavscan(std::vector<geo::Vector3> &measuremen
                 continue;
 
             measurements.push_back(p_map);
-
-//            cv::Point p_cv;
-//            if (map.worldToMap(p_map.x, p_map.y, p_cv.x, p_cv.y))
-//            {
-//                map.image.at<unsigned char>(p_cv) = 100;
-//            }
         }
     }
 
