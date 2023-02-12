@@ -38,10 +38,10 @@ protected:
 
         dsi_cam_init.setCameraModel(cam_model);
 
-        dsi_params_init.initialize(slope_threshold, min_distance, max_distance, num_samples, slope_window_size);
+        dsi_params_init.initialize(slope_threshold, floor_slope_height, min_distance, max_distance, max_height, num_samples, slope_window_size);
 
         dsi_full_init.setCameraModel(cam_model);
-        dsi_full_init.initialize(slope_threshold, min_distance, max_distance, num_samples, slope_window_size);
+        dsi_full_init.initialize(slope_threshold, floor_slope_height, min_distance, max_distance, max_height, num_samples, slope_window_size);
     }
 
     DepthSensorIntegrator dsi_no_init;
@@ -52,10 +52,12 @@ protected:
     // sample cameramodel
     image_geometry::PinholeCameraModel cam_model;
     // sample config
-    uint num_samples = 20;
     double slope_threshold = 1.0;
+    double floor_slope_height = 0.2;
     double min_distance = 0.4;
     double max_distance = 2.0;
+    double max_height = 1.7;
+    uint num_samples = 20;
     int slope_window_size = 30;
 };
 
