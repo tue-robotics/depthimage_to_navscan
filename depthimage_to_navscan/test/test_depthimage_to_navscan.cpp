@@ -29,99 +29,111 @@ sensor_msgs::CameraInfo getDefaultCamInfo()
 }
 
 
-class DepthSensorIntegratorTest : public ::testing::Test {
+class IntegratorNoInit : public ::testing::Test {
+protected:
+    DepthSensorIntegrator dsi;
+
+    // sample config
+    double slope_threshold = 1.0;
+    double floor_slope_height = 0.2;
+    double min_distance = 0.4;
+    double max_distance = 2.0;
+    double max_height = 1.7;
+    uint num_samples = 20;
+    int slope_window_size = 30;
+};
+
+class IntegratorParamInit : public IntegratorNoInit
+{
+protected:
+    void SetUp() override
+    {
+        dsi.initialize(slope_threshold, floor_slope_height, min_distance, max_distance, max_height, num_samples, slope_window_size);
+    }
+};
+
+class IntegratorCamInit : public IntegratorNoInit
+{
 protected:
     void SetUp() override
     {
         sensor_msgs::CameraInfo cam_info_message = getDefaultCamInfo();
         cam_model.fromCameraInfo(cam_info_message);
-
-        dsi_cam_init.setCameraModel(cam_model);
-
-        dsi_params_init.initialize(slope_threshold, min_distance, max_distance, num_samples, slope_window_size);
-
-        dsi_full_init.setCameraModel(cam_model);
-        dsi_full_init.initialize(slope_threshold, min_distance, max_distance, num_samples, slope_window_size);
+        dsi.setCameraModel(cam_model);
     }
-
-    DepthSensorIntegrator dsi_no_init;
-    DepthSensorIntegrator dsi_params_init;
-    DepthSensorIntegrator dsi_cam_init;
-    DepthSensorIntegrator dsi_full_init;
 
     // sample cameramodel
     image_geometry::PinholeCameraModel cam_model;
-    // sample config
-    uint num_samples = 20;
-    double slope_threshold = 1.0;
-    double min_distance = 0.4;
-    double max_distance = 2.0;
-    int slope_window_size = 30;
 };
 
-TEST_F(DepthSensorIntegratorTest, CheckNotInitialised)
+class IntegratorFullInit : public IntegratorCamInit
 {
-std::vector<geo::Vector3> measurements;
+protected:
+    void SetUp() override
+    {
+        IntegratorCamInit::SetUp();
+        dsi.initialize(slope_threshold, floor_slope_height, min_distance, max_distance, max_height, num_samples, slope_window_size);
+    }
+};
 
-//generate input data
-cv::Mat depth;
-geo::Pose3D sensor_pose;
+TEST_F(IntegratorNoInit, CheckNotInitialised)
+{
+    // Generate input data
+    std::vector<geo::Vector3> measurements;
+    cv::Mat depth;
+    geo::Pose3D sensor_pose;
 
-ASSERT_FALSE(dsi_no_init.isInitialized()) << "depthSensorIntegrator believes itself to be initialized upon construction";
-ASSERT_FALSE(dsi_no_init.imageToNavscan(measurements, depth, sensor_pose)) << "imageToNavscan returned true even when not initialised";
+    ASSERT_FALSE(dsi.isInitialized()) << "DepthSensorIntegrator believes itself to be initialized upon construction";
+    ASSERT_FALSE(dsi.imageToNavscan(measurements, depth, sensor_pose)) << "imageToNavscan returned true even when not initialised";
 }
 
-TEST_F(DepthSensorIntegratorTest, CheckCameraNotInitialised)
+TEST_F(IntegratorParamInit, CheckCameraNotInitialised)
 {
-std::vector<geo::Vector3> measurements;
+    // Generate input data
+    std::vector<geo::Vector3> measurements;
+    cv::Mat depth;
+    geo::Pose3D sensor_pose;
 
-//generate input data
-cv::Mat depth;
-geo::Pose3D sensor_pose;
-
-ASSERT_FALSE(dsi_params_init.isInitialized()) << "depthSensorIntegrator believes itself to be initialized while camera was not initialised";
-ASSERT_FALSE(dsi_params_init.imageToNavscan(measurements, depth, sensor_pose)) << "imageToNavscan returned true even when camera not initialised";
+    ASSERT_FALSE(dsi.isInitialized()) << "DepthSensorIntegrator believes itself to be initialized, while the camera was not initialised";
+    ASSERT_FALSE(dsi.imageToNavscan(measurements, depth, sensor_pose)) << "imageToNavscan returned true even when the camera is not initialised";
 }
 
-TEST_F(DepthSensorIntegratorTest, CheckParamsNotInitialised)
+TEST_F(IntegratorCamInit, CheckParamsNotInitialised)
 {
-std::vector<geo::Vector3> measurements;
+    // Generate input data
+    std::vector<geo::Vector3> measurements;
+    cv::Mat depth;
+    geo::Pose3D sensor_pose;
 
-//generate input data
-cv::Mat depth;
-geo::Pose3D sensor_pose;
-
-ASSERT_FALSE(dsi_cam_init.isInitialized()) << "depthSensorIntegrator believes itself to be initialized even though params was not intialised";
-ASSERT_FALSE(dsi_cam_init.imageToNavscan(measurements, depth, sensor_pose)) << "imageToNavscan returned true even when parameters not initialised";
+    ASSERT_FALSE(dsi.isInitialized()) << "DepthSensorIntegrator believes itself to be initialized even though, the parameters were not intialised";
+    ASSERT_FALSE(dsi.imageToNavscan(measurements, depth, sensor_pose)) << "imageToNavscan returned true even when the parameters were not initialised";
 }
 
-TEST_F(DepthSensorIntegratorTest, CheckInitialised)
+TEST_F(IntegratorFullInit, CheckInitialised)
 {
-std::vector<geo::Vector3> measurements;
+    // Generate input data
+    std::vector<geo::Vector3> measurements;
+    cv::Mat depth;
+    geo::Pose3D sensor_pose;
 
-//generate input data
-cv::Mat depth;
-geo::Pose3D sensor_pose;
-
-ASSERT_TRUE(dsi_full_init.isInitialized()) << "depthSensorIntegrator believes itself to not be initialized while it was";
-ASSERT_TRUE(dsi_full_init.imageToNavscan(measurements, depth, sensor_pose)) << "imageToNavscan returned false when initialised";
+    ASSERT_TRUE(dsi.isInitialized()) << "DepthSensorIntegrator believes itself to not be initialized, while it was";
+    ASSERT_TRUE(dsi.imageToNavscan(measurements, depth, sensor_pose)) << "imageToNavscan returned false when initialised";
 }
 
-TEST_F(DepthSensorIntegratorTest, CheckOutput)
+TEST_F(IntegratorFullInit, CheckOutput)
 {
-std::vector<geo::Vector3> measurements;
+    // Generate input data
+    std::vector<geo::Vector3> measurements;
+    double distance = 1.0;
+    cv::Mat depth(CAM_WIDTH, CAM_HEIGHT, CV_32F, distance);
+    geo::Pose3D sensor_pose(0, 0, 1.0, M_PI_2, -M_PI_2, 0.0);
 
-//generate input data
-double distance = 1.0;
-cv::Mat depth(CAM_WIDTH, CAM_HEIGHT, CV_32F, distance);
-geo::Pose3D sensor_pose(0, 0, 1.0, M_PI_2, -M_PI_2, 0.0);
-
-dsi_full_init.imageToNavscan(measurements, depth, sensor_pose);
-ASSERT_EQ(measurements.size(), num_samples) << "Output navscan has incorrect number of points";
-for (uint i=0; i<measurements.size(); i++)
-{
-    ASSERT_EQ(measurements[i].y, distance) << "measurement has incorrect distance";
-}
+    dsi.imageToNavscan(measurements, depth, sensor_pose);
+    ASSERT_EQ(measurements.size(), num_samples) << "Output navscan has incorrect number of points";
+    for (uint i=0; i<measurements.size(); ++i)
+    {
+        ASSERT_EQ(measurements[i].y, distance) << "Measurement has incorrect distance";
+    }
 }
 
 int main(int argc, char **argv)

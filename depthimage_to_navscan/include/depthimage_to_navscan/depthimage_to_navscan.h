@@ -27,12 +27,14 @@ public:
     /**
      * @brief initialize
      * @param slope_threshold
+     * @param floor_slope_height
      * @param min_distance
      * @param max_distance
+     * @param max_height
      * @param num_samples
      * @param slope_window_size
      */
-    void initialize(double slope_threshold, double min_distance, double max_distance, int num_samples, int slope_window_size);
+    void initialize(double slope_threshold, double floor_slope_height, double min_distance, double max_distance, double max_height, int num_samples, int slope_window_size);
 
     inline double getSlopeThreshold() const { return slope_threshold_; }
     inline void setSlopeThreshold(double d) { slope_threshold_ = d; }
@@ -66,8 +68,10 @@ private:
 
     // Params
     double slope_threshold_;
+    double floor_slope_height_;
     double min_distance_;
     double max_distance_;
+    double max_height_;
 
     int num_samples_;
 

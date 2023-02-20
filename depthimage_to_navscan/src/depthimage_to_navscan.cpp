@@ -34,11 +34,13 @@ DepthSensorIntegrator::~DepthSensorIntegrator()
 
 // ----------------------------------------------------------------------------------------------------
 
-void DepthSensorIntegrator::initialize(double slope_threshold, double min_distance, double max_distance, int num_samples, int slope_window_size)
+void DepthSensorIntegrator::initialize(double slope_threshold, double floor_slope_height, double min_distance, double max_distance, double max_height, int num_samples, int slope_window_size)
 {
     slope_threshold_ = slope_threshold;
+    floor_slope_height_ = floor_slope_height;
     min_distance_ = min_distance;
     max_distance_ = max_distance;
+    max_height_ = max_height;
     num_samples_ = num_samples;
     slope_window_size_ = slope_window_size;
     params_initialised_ = true;
@@ -73,26 +75,29 @@ bool DepthSensorIntegrator::imageToNavscan(std::vector<geo::Vector3> &measuremen
     if (num_samples_ > 0 && num_samples_ < depth.cols)
         x_step = static_cast<double>(depth.cols) / num_samples_;
 
+    // Iterate over the columns
     for (double x = 0; x < width; x += x_step)
     {
         geo::Vector3 p_floor_closest(1e6, 1e6, 0);
 
         buffer.at<cv::Vec4d>(0, 0) = cv::Vec4d(0, 0, 0, 0);
 
+        // Iterate over the rows to find the closest obstacle point and apply the slope
         for (int y = 1; y < height; ++y)
         {
             float d = depth.at<float>(y, x);
-            if (d == 0 || d != d)
+            if (d == 0 || d != d) // Ignore datapoints which are zero or NaN
             {
                 buffer.at<cv::Vec4d>(y, 0) = buffer.at<cv::Vec4d>(y - 1, 0);
                 continue;
             }
 
-            geo::Vector3 p_sensor = rasterizer_.project2Dto3D(x, y) * d;
+            geo::Vector3 p_sensor = rasterizer_.project2Dto3D(x, y) * d; // Point in sensor frame
             p_floors[y] = sensor_pose_zrp * p_sensor;
-            const geo::Vector3& p_floor = p_floors[y];
+            const geo::Vector3& p_floor = p_floors[y]; // Point in floor frame
 
-            if (p_floor.z > 0.2)
+            // Find closest point above threshold height
+            if (p_floor.z >= floor_slope_height_)
             {
                 if (p_floor.y < p_floor_closest.y)
                     p_floor_closest = p_floor;
@@ -105,25 +110,27 @@ bool DepthSensorIntegrator::imageToNavscan(std::vector<geo::Vector3> &measuremen
                         obstacle_map.at<float>(p) = 0.5;
                 }
             }
+
+            // Apply slope
             buffer.at<cv::Vec4d>(y, 0) = buffer.at<cv::Vec4d>(y - 1, 0)
                                          + cv::Vec4d(p_floor.y, p_floor.z, p_floor.y * p_floor.z, p_floor.y * p_floor.y);
         }
 
+        // Iterate over the rows, applying the slope_window, to find the closest point, when exceeding slope threshold
         for (int y = slope_window_size_; y < height - slope_window_size_; ++y)
         {
             float d = depth.at<float>(y, x);
-            if (d == 0 || d != d)
+            if (d == 0 || d != d) // Ignore datapoints which are zero or NaN
                 continue;
 
             const geo::Vector3& p_floor = p_floors[y];
 
-            if (p_floor.z < 0.2)
+            // Find closest point below threshold height, but which exceeds the slope threshold
+            if (p_floor.z < floor_slope_height_)
             {
-
-                double s2;
                 cv::Vec4d b2 = buffer.at<cv::Vec4d>(y + slope_window_size_ / 2, 0)
                                - buffer.at<cv::Vec4d>(y - slope_window_size_ / 2, 0);
-                s2 = (slope_window_size_ * b2[2] - b2[0] * b2[1]) / (slope_window_size_ * b2[3] - b2[0] * b2[0]);
+                double s2 = (slope_window_size_ * b2[2] - b2[0] * b2[1]) / (slope_window_size_ * b2[3] - b2[0] * b2[0]);
 
                 if (std::abs(s2) > slope_threshold_)
                 {
@@ -145,7 +152,11 @@ bool DepthSensorIntegrator::imageToNavscan(std::vector<geo::Vector3> &measuremen
         if (p_floor_closest.y < max_distance_ && p_floor_closest.y > min_distance_)
         {
             geo::Vec3 p_map = sensor_pose_xya * p_floor_closest;
-            if (p_map.z > 1.7)
+            /*
+             * Ignore resulting point above a threshold.
+             * This may result in other points further away, but below the height threshold being ignored.
+             */
+            if (p_map.z > max_height_)
                 continue;
 
             measurements.push_back(p_map);

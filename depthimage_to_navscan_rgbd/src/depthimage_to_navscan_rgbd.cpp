@@ -27,15 +27,17 @@ int main(int argc, char** argv)
 
     DepthSensorIntegrator depthSensorIntegrator;
     // get depth sensor integrator parameters
-    int num_samples;
-    double slope_threshold;
-    double min_distance;
-    double max_distance;
-    int slope_window_size;
+    double slope_threshold, floor_slope_height, min_distance, max_distance, max_height;
+    int slope_window_size, num_samples;
 
     if (!nh.getParam("slope_threshold", slope_threshold))
     {
         ROS_FATAL("[Depthimage to Navscan RGBD] could not read slope_threshold from parameter server");
+        return 1;
+    }
+    if (!nh.getParam("slope_threshold", floor_slope_height))
+    {
+        ROS_FATAL("[Depthimage to Navscan RGBD] could not read floor_slope_height from parameter server");
         return 1;
     }
     if (!nh.getParam("min_distance", min_distance))
@@ -48,9 +50,9 @@ int main(int argc, char** argv)
         ROS_FATAL("[Depthimage to Navscan RGBD] could not read max_distance from parameter server");
         return 1;
     }
-    if (!nh.getParam("slope_window_size", slope_window_size))
+    if (!nh.getParam("max_height", max_height))
     {
-        ROS_FATAL("[Depthimage to Navscan RGBD] could not read slope_window_size from parameter server");
+        ROS_FATAL("[Depthimage to Navscan RGBD] could not read max_height from parameter server");
         return 1;
     }
     if (!nh.getParam("num_samples", num_samples))
@@ -58,11 +60,16 @@ int main(int argc, char** argv)
         ROS_FATAL("[Depthimage to Navscan RGBD] could not read num_samples from parameter server");
         return 1;
     }
+    if (!nh.getParam("slope_window_size", slope_window_size))
+    {
+        ROS_FATAL("[Depthimage to Navscan RGBD] could not read slope_window_size from parameter server");
+        return 1;
+    }
 
-    depthSensorIntegrator.initialize(slope_threshold, min_distance, max_distance, num_samples, slope_window_size);
+    depthSensorIntegrator.initialize(slope_threshold, floor_slope_height, min_distance, max_distance, max_height, num_samples, slope_window_size);
     ROS_INFO("[Depthimage to Navscan RGBD] initialised depth sensor integrator with:\n"
-              " slope_threshold: %f, min_distance: %f, max_distance: %f, num_samples: %i, slope_window_size: %i",
-              slope_threshold, min_distance, max_distance, num_samples, slope_window_size);
+              " slope_threshold: %f, floor_slope_height: %f, min_distance: %f, max_distance: %f, max_height: %f, num_samples: %i, slope_window_size: %i",
+              slope_threshold, floor_slope_height, min_distance, max_distance, max_height, num_samples, slope_window_size);
 
     rgbd::ImageBuffer image_buffer;
     image_buffer.initialize(rgbd_topic, frame_id);
