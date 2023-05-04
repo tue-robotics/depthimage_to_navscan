@@ -25,7 +25,7 @@ int main(int argc, char** argv)
         return 1;
     }
     
-    # Optional
+    // Optional
     double rate = 10;
     if (!nh.getParam("rate", frame_id))
     {
