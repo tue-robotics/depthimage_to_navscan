@@ -84,15 +84,13 @@ int main(int argc, char** argv)
     ros::Publisher pointcloud2_publisher = nh.advertise<sensor_msgs::PointCloud2>("navscan", 20);
 
     ros::Rate r(rate);
-    ros::Rate r_inner(20*rate);
     while (ros::ok())
     {
         rgbd::ImageConstPtr image;
         geo::Pose3D sensor_pose;
-        r_inner.reset();
-        while (!image_buffer.nextImage(image, sensor_pose))
+        if (!image_buffer.waitForRecentImage(image, sensor_pose, r.expectedCycleTime().toSec()))
         {
-            r_inner.sleep();
+            r.sleep(); // So we do sleep after getting an image again after failing to get an image
             continue;
         }
 
