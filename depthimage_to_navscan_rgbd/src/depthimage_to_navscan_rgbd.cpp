@@ -29,7 +29,7 @@ int main(int argc, char** argv)
     double rate = 100;
     if (!nh.getParam("rate", rate))
     {
-        ROS_DEBUG("[Depthimage to Navscan RGBD] could not read rate from parameter server");
+        ROS_DEBUG_STREAM("[Depthimage to Navscan RGBD] could not read rate from parameter server, defaulting to " << rate);
     }
 
     DepthSensorIntegrator depthSensorIntegrator;
