@@ -24,6 +24,13 @@ int main(int argc, char** argv)
         ROS_FATAL("[Depthimage to Navscan RGBD] could not read frame_id from parameter server");
         return 1;
     }
+    
+    // Optional
+    double rate = 100;
+    if (!nh.getParam("rate", rate))
+    {
+        ROS_DEBUG_STREAM("[Depthimage to Navscan RGBD] could not read rate from parameter server, defaulting to " << rate);
+    }
 
     DepthSensorIntegrator depthSensorIntegrator;
     // get depth sensor integrator parameters
@@ -76,12 +83,16 @@ int main(int argc, char** argv)
 
     ros::Publisher pointcloud2_publisher = nh.advertise<sensor_msgs::PointCloud2>("navscan", 20);
 
+    ros::Rate r(rate);
     while (ros::ok())
     {
         rgbd::ImageConstPtr image;
         geo::Pose3D sensor_pose;
-        if (!image_buffer.nextImage(image, sensor_pose))
+        if (!image_buffer.waitForRecentImage(image, sensor_pose, r.expectedCycleTime().toSec()))
+        {
+            r.sleep(); // So we do sleep after getting an image again after failing to get an image
             continue;
+        }
 
         if (!depthSensorIntegrator.isInitialized())
         {
@@ -148,5 +159,6 @@ int main(int argc, char** argv)
         }
 
         pointcloud2_publisher.publish(pointcloud2_msg);
+        r.sleep();
     }
 }
