@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0.2)
+cmake_minimum_required(VERSION 3.5)
 project(depthimage_to_navscan_rgbd)
 
 add_compile_options(-Wall -Werror=all)
